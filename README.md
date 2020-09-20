@@ -5,7 +5,7 @@
 ctrl + click to open it in a new browser
 
 
-[Demo](https://github.com/MV88/tab-results/blob/master/public/demo_page.png?raw=true)
+<img src="https://github.com/MV88/tab-results/blob/master/public/demo_page.png?raw=true" alt ="demo preview"/>
 
 
 # TODO
