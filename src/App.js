@@ -1,24 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
+
 import './App.css';
+import Table from './components/Table';
+import Twitch from './components/Twitch';
+import Statistics from './components/Statistics';
+import AddResult from './components/AddResult';
+import {getResults} from './API/service';
 
 function App() {
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    async function fetchData() {
+    const resPromise = await getResults();
+    const {results} = await resPromise.json();
+    if (results){
+      setResults(results);
+    } 
+  }
+
+  fetchData();
+}, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="container">
+      
+        <header className="App-header">
+          <h1> TAB Results</h1>
+          <Table rows={results}/>
+          <Twitch/>
+          <Statistics/>
+          <AddResult/>
+
+        </header>
+      </div>
     </div>
   );
 }
