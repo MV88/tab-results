@@ -4,11 +4,14 @@ import './App.css';
 import Table from './components/Table';
 import Twitch from './components/Twitch';
 import Statistics from './components/Statistics';
+import User from './components/user/User';
 import AddResult from './components/AddResult';
 import {getResults} from './API/service';
+import Modal from './components/Modal';
 
 function App() {
   const [results, setResults] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -22,17 +25,28 @@ function App() {
   fetchData();
 }, [])
   return (
-    <div className="App">
+    <div className="tab">
       <div className="container">
-      
-        <header className="App-header">
+        <div className="header">
+          <Twitch/>
+          <User
+            setIsVisible={setIsVisible}
+            isVisible={isVisible}
+          />
+          <Modal
+            setIsVisible={setIsVisible}
+            isVisible={isVisible}
+          />
+        </div>
+        <div className="body">
+          <img className="tab-banner" alt="tab-banner" src="http://www.numantiangames.com/wp-content/uploads/LogoTheyAreBillions540.gif" />
           <h1> TAB Results</h1>
           <Table rows={results}/>
-          <Twitch/>
           <Statistics/>
-          <AddResult/>
-
-        </header>
+          <AddResult
+            setResults={setResults}
+            />
+        </div>
       </div>
     </div>
   );

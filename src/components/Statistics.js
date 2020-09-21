@@ -4,7 +4,7 @@ import PR from './PR';
 export default ({
   className = "statistics",
 } = {}) => {
-  const win = 20
+  const win = 20;
   return (
   <div className={className}>
     <h4>% Win is 20 %</h4>

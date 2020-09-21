@@ -11,8 +11,16 @@ ctrl + click to open it in a new browser
 # TODO
 
 - [x] add new result
-  - [ ] update frontend after a new result has been added
-- [ ] add authentication (add user to requests)
+  - [x] update frontend after a new result has been added
+- [ ] add authentication (add user to requests) <--- WIP
+  - [x] ADD HEADER
+  - [x] on the right corner
+    - [x] login form 
+    - [x] login button 
+    - [x] register button 
+    - [ ] if logged --> avatar
+    - [ ] if logged --> username
+  - [ ] add registration form
 - [ ] filtering
 - [ ] searching
 - [ ] querying
@@ -21,3 +29,5 @@ ctrl + click to open it in a new browser
   - [ ] pr
 - [ ] sorting
 - [ ] integrate this with twitch chat
+- [ ] dark mode
+- [ ] LOW PRIORITY add runtime error handling

@@ -15,7 +15,7 @@ export default ({
   <tr>
     <td>{type || "N.A."}</td>
     <td>{score || "N.A."}</td>
-  <td>{`${day}g` || "N.A."} {hour ? `${hour}h` : ""}</td>
+      <td>{day ? (day + "g") : "N.A."} {hour ? `${hour}h` : ""}</td>
     <td>{population || "N.A."}</td>
     <td>{colInfected || "N.A."}</td>
     <td>{soldDead || "N.A."}</td>

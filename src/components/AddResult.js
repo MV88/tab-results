@@ -1,11 +1,11 @@
 import React, {useState, useEffect} from 'react';
 import { postResults } from '../API/service';
 
-const validateData = async (values, setValues) => {
+const validateData = async (values, setResults) => {
   // TODO validate data before send
   const {results} = await postResults(values);
     console.log("results", results);
-    // setValues(results);
+    setResults(results);
 }
 const getDifficultyOptions = (values = {}, setValues) => {
   switch (values.map) {
@@ -66,17 +66,13 @@ const getDifficultyOptions = (values = {}, setValues) => {
   }
 }
 
-export default () => {
+export default ({setResults}) => {
   const [values, setValues] = useState({});
 
   useEffect(() => {
     console.log("values", values);
     
   }, [values])
-/*
-  useEffect(() => {
-    setValues({...values, difficulty: "550"})
-      }, [values.map])*/
   return <div className="add-result">
       <h3>Add new result</h3>
       <form className="form" id="form-add-result">
@@ -168,7 +164,7 @@ export default () => {
           <label>Difficulty</label> {getDifficultyOptions(values, setValues)}
         </div>
     </form>
-    <button value="Add" onClick={() => validateData(values, setValues)}>Add</button>
+    <button value="Add" onClick={() => validateData(values, setResults)}>Add</button>
 
   </div>
 

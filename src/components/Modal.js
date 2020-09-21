@@ -1,25 +1,21 @@
 import React from 'react';
 
-export default ({show}) => {
-  return show && <div id="openModal" class="modalWindow">
-  <div>
-      
-      <div class="modalHeader">
-          <h2>This is a sample modal window</h2>
-          <a href="#close" title="Close" class="close">X</a>
+export default ({isVisible, setIsVisible}) => {
+  const onClose = () => {
+    setIsVisible(false);
+  }
+  return isVisible ? <>
+    <div id="myModal" className="modal"
+      onClick={(e) => {
+        const modal = document.getElementById("myModal");
+        if (e.target === modal) {
+          onClose();
+        }
+    }}>
+      <div className="modal-content">
+        <span className="close" onClick={onClose}>&times;</span>
+        <p>Some text in the Modal..</p>
       </div>
-      
-      <div class="modalContent">
-          <p>This is a sample modal window that can be created using CSS3 and HTML5.</p>
-          <p>Modal windows are used, among many others, to display login/register forms; advertisements; or just notifications to the user. They frequently contain critical information, that user must attend in order to return to the page.</p>
-      </div>
-      
-      <div class="modalFooter">
-          <a href="#cancel" title="Cancel" class="cancel">Cancel</a>
-          <a href="#ok" title="Ok" class="ok">Apply</a>
-          <p>Keep in mind that this is a demo</p>
-          <div class="clear"></div>
-      </div>
-  </div>
-</div>
+    </div>
+  </> : null
 }

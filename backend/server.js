@@ -43,7 +43,6 @@ app.get("/", (req, res) => {
  */
 app.get("/results", async (req, res) => {
   const results = await knex.select("*").from(tableNames.result);
-  // const results = await fetch("http://localhost:3000/fakeResults.json").then(res => res.json());
   res.json({
     message: "Results",
     results,
@@ -54,11 +53,6 @@ app.post("/results", async (req, res) => {
 
   // todo fetch data from request
   console.log("req.body", req.body);
-  const results = await fetch("http://localhost:3000/fakeResults.json").then(res => res.json());
-  res.json({
-    message: "Results",
-    results,
-  });
   // todo pass user
   await knex.table(tableNames.result).insert({
     type: "W",
@@ -67,14 +61,12 @@ app.post("/results", async (req, res) => {
     map_type_id: 1,
     score: 80 * 1000,
   });
-
-  // todo push data to database with knex
-  // insert
-  /*const results = await axios.exports("http://localhost:3000/.json").then(res => res.json());
+  const results = await knex.select("*").from(tableNames.result);
   res.json({
     message: "Results",
     results,
-  });*/
+  });
+
 });
 // todo add error handler
 
