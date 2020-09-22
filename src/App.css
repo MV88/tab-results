@@ -78,7 +78,7 @@ tr:nth-child(even) {
   margin-top: 20px; 
 }
 
-  .add-result .form {
+  .form {
     left: calc(-50% + 120px);
     text-align: end;
     position: relative;
@@ -87,7 +87,7 @@ tr:nth-child(even) {
   .add-result h3 {
     color: rgb(169, 112, 255);
   }
-  .add-result .form .data {
+  .form .data {
       padding: 5px;
   }
 
@@ -129,4 +129,9 @@ tr:nth-child(even) {
   color: #000;
   text-decoration: none;
   cursor: pointer;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
 }

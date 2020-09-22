@@ -5,12 +5,14 @@ import Table from './components/Table';
 import Twitch from './components/Twitch';
 import Statistics from './components/Statistics';
 import User from './components/user/User';
+import RegisterForm from './components/user/RegisterForm';
 import AddResult from './components/AddResult';
 import {getResults} from './API/service';
 import Modal from './components/Modal';
 
 function App() {
   const [results, setResults] = useState([]);
+  const [isLoggedUser, setIsLoggedUser] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -30,10 +32,16 @@ function App() {
         <div className="header">
           <Twitch/>
           <User
+            isLoggedUser={isLoggedUser}
             setIsVisible={setIsVisible}
             isVisible={isVisible}
           />
           <Modal
+            contentComponent={
+              <RegisterForm
+              setIsLoggedUser={setIsLoggedUser}
+              setIsVisible={setIsVisible}
+            />}
             setIsVisible={setIsVisible}
             isVisible={isVisible}
           />

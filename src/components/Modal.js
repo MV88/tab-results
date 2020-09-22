@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default ({isVisible, setIsVisible}) => {
+export default ({isVisible, setIsVisible, contentComponent = ""}) => {
   const onClose = () => {
     setIsVisible(false);
   }
@@ -14,7 +14,7 @@ export default ({isVisible, setIsVisible}) => {
     }}>
       <div className="modal-content">
         <span className="close" onClick={onClose}>&times;</span>
-        <p>Some text in the Modal..</p>
+        {contentComponent}
       </div>
     </div>
   </> : null

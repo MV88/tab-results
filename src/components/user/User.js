@@ -1,11 +1,13 @@
 import React from 'react';
 import Avatar from './Avatar';
 
-
-export default ({isLoggedIn = false, setIsVisible}) => {
+/**
+ * user is the object containing user info, like name, email etc
+ */
+export default ({isLoggedUser = false, setIsVisible, user}) => {
   return <div className="user">
     {
-    !isLoggedIn &&
+    !isLoggedUser &&
     <>
       <div className="inputs">
         <div className="pwd">
@@ -26,7 +28,7 @@ export default ({isLoggedIn = false, setIsVisible}) => {
     }
     <div className="avatar">
       <Avatar/>
-      {isLoggedIn && <p>Logged in</p>}
+  {isLoggedUser && <p>Hi {user.name}</p>}
     </div>
   </div>
 }

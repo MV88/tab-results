@@ -12,16 +12,21 @@ ctrl + click to open it in a new browser
 
 - [x] add new result
   - [x] update frontend after a new result has been added
-- [ ] add authentication (add user to requests) <--- WIP
+- [ ] add authentication and user related stuff (add user to requests) 
   - [x] ADD HEADER
+  - [ ] [express.jwt](https://www.npmjs.com/package/express-jwt)
   - [x] on the right corner
     - [x] login form 
     - [x] login button 
     - [x] register button 
+    - [x] register form
     - [ ] if logged --> avatar
-    - [ ] if logged --> username
+    - [ ] if logged --> username <--- WIP
   - [ ] add registration form
+  - [ ] spinner and loading messages, feedbacks
+- [ ] chart of results
 - [ ] filtering
+- [ ] pagination
 - [ ] searching
 - [ ] querying
   - [ ] % win, % lose
@@ -30,4 +35,8 @@ ctrl + click to open it in a new browser
 - [ ] sorting
 - [ ] integrate this with twitch chat
 - [ ] dark mode
-- [ ] LOW PRIORITY add runtime error handling
+
+### LOW PRIORITY 
+- [ ] add runtime error handling
+- [ ] add priettier
+- [ ] add picture in register form

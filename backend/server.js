@@ -1,13 +1,12 @@
 const express = require('express');
-const axios = require('axios');
+// const axios = require('axios');
 const morgan = require('morgan');
 const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
+
 // todo add body parser
 const app = express();
-// const fakeResults = require('../src/resources/fakeResults');
-const fetch = require('node-fetch');
 const bodyParser = require('body-parser');
 const tableNames = require('./src/constants/tableNames');
 require('dotenv').config();
@@ -51,8 +50,6 @@ app.get("/results", async (req, res) => {
 
 app.post("/results", async (req, res) => {
 
-  // todo fetch data from request
-  console.log("req.body", req.body);
   // todo pass user
   await knex.table(tableNames.result).insert({
     type: "W",
@@ -67,6 +64,21 @@ app.post("/results", async (req, res) => {
     results,
   });
 
+});
+
+
+app.post("/users", async (req, res) => {
+  const user = req.body;
+  console.log("user", user);
+  const userAdded = await knex.table(tableNames.user).insert(user);
+  console.log("userAdded", userAdded);
+  
+  res.status(201).json({
+    message: "Authenticated!!!",
+    user,
+    isValidUser: true,
+  });
+  // return some info like token jwt or session..
 });
 // todo add error handler
 
