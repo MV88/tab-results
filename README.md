@@ -12,17 +12,21 @@ ctrl + click to open it in a new browser
 
 - [x] add new result
   - [x] update frontend after a new result has been added
-- [ ] add authentication and user related stuff (add user to requests) 
+- [x] add https support
+- [x] add authentication
   - [x] ADD HEADER
-  - [ ] [express.jwt](https://www.npmjs.com/package/express-jwt)
+  - [/] [express.jwt](https://www.npmjs.com/package/express-jwt), not used, but used a similar technique described [here](https://gist.github.com/laurenfazah/f9343ae8577999d301334fc68179b485)
   - [x] on the right corner
     - [x] login form 
     - [x] login button 
     - [x] register button 
     - [x] register form
     - [ ] if logged --> avatar
-    - [ ] if logged --> username <--- WIP
-  - [ ] add registration form
+    - [x] if logged --> username
+    - [x] add registration form
+- [ ] add logout button
+- [ ] block non authenticated part of the website
+- [ ] remember to add user token to requests
   - [ ] spinner and loading messages, feedbacks
 - [ ] chart of results
 - [ ] filtering

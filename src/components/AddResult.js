@@ -85,7 +85,7 @@ export default ({setResults}) => {
             type="radio"
             id="win"
             name="type"
-            value="win"/>
+            value="W"/>
           <label htmlFor="win">Win</label>
           <input
             onChange={(e) => {
@@ -94,7 +94,7 @@ export default ({setResults}) => {
             type="radio"
             id="lose"
             name="type"
-            value="lose"/>
+            value="L"/>
           <label htmlFor="lose">Lose</label> (*) 
         </div>
         <div className="data">
@@ -132,34 +132,7 @@ export default ({setResults}) => {
             setValues({...values, sol_dead: e.target.value})
           }}/>
         </div>
-        <div className="data">
-        <label htmlFor="map">Map</label> 
-          <input required type="radio" id="1" name="map" value="1"
-            onChange={(e) => {
-              setValues({...values, map: e.target.value})
-            }}
-          /> <label htmlFor="1">1</label>
-          <input required type="radio" id="2" name="map" value="2"
-            onChange={(e) => {
-              setValues({...values, map: e.target.value})
-            }}
-          /> <label htmlFor="2">2</label>
-          <input required type="radio" id="3" name="map" value="3"
-            onChange={(e) => {
-              setValues({...values, map: e.target.value})
-            }}
-          /> <label htmlFor="3">3</label>
-          <input required type="radio" id="4" name="map" value="4"
-            onChange={(e) => {
-              setValues({...values, map: e.target.value})
-            }}
-          /> <label htmlFor="4">4</label>
-          <input required type="radio" id="5" name="map" value="5"
-            onChange={(e) => {
-              setValues({...values, map: e.target.value})
-            }}
-          /> <label htmlFor="5">5</label>
-        </div>
+        
         <div className="data">
           <label>Difficulty</label> {getDifficultyOptions(values, setValues)}
         </div>

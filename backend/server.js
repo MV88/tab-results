@@ -4,25 +4,38 @@ const morgan = require('morgan');
 const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
+require('dotenv').config();
+
+const { signup, authenticate, signin } = require('./src/models/user');
+
+
+
+const key = fs.readFileSync(__dirname + '/selfsigned.key');
+const cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+const options = {
+  key: key,
+  cert: cert,
+};
 
 // todo add body parser
 const app = express();
+
+const server = https.createServer(options, app);
+server.listen(process.env.HTTPS_PORT, () => {
+  console.log("server starting on port : " + process.env.HTTPS_PORT);
+});
+
 const bodyParser = require('body-parser');
 const tableNames = require('./src/constants/tableNames');
-require('dotenv').config();
+
+const environment = process.env.NODE_ENV || 'development';
+const configuration = require('./knexfile')[environment];
+const knex = require('knex')(configuration);
 
 const jsonParser = bodyParser.json();
 
-const knex = require('knex')({
-  client: 'pg',
-  connection: {
-    host : 'localhost',
-    user : process.env.POSTGRES_USER,
-    password : process.env.POSTGRES_PASSWORD,
-    database : process.env.POSTGRES_DB,
-  },
-  pool: { min: 0, max: 7 },
-});
 
 app.use(cors());
 app.use(morgan('tiny'));
@@ -49,37 +62,52 @@ app.get("/results", async (req, res) => {
 });
 
 app.post("/results", async (req, res) => {
+  const body = req.body;
+  const users = await knex.select("*").from(tableNames.user).where("email", body.email);
+  
+  // const mapTypes = await knex.select("*").from(tableNames.map_type).where("map_type", req.map_type);
+  const mapTypes = await knex.select("*").from(tableNames.map_type);
+  if (authenticate(body)) {
+    // handler logic goes here
+    await knex.table(tableNames.result).insert({
+      user_id: users[0].id,
+      map_type_id: mapTypes[0].id,
+      ...body.result,
+    });
+  
+    const results = await knex.select("*").from(tableNames.result);
+    res.json({
+      message: "Results",
+      results,
+    });
+ } else {
+    res.status(404)
+ }
 
   // todo pass user
-  await knex.table(tableNames.result).insert({
-    type: "W",
-    population: 123,
-    user_id: 1,
-    map_type_id: 1,
-    score: 80 * 1000,
-  });
-  const results = await knex.select("*").from(tableNames.result);
-  res.json({
-    message: "Results",
-    results,
-  });
-
-});
-
-
-app.post("/users", async (req, res) => {
-  const user = req.body;
-  console.log("user", user);
-  const userAdded = await knex.table(tableNames.user).insert(user);
-  console.log("userAdded", userAdded);
   
-  res.status(201).json({
-    message: "Authenticated!!!",
-    user,
-    isValidUser: true,
-  });
-  // return some info like token jwt or session..
+
 });
+
+
+app.post("/signup", signup);
 // todo add error handler
 
+app.post('/signin', signin);
+
+// with authentication
+/*
+const userPhotos = (request, response) => {
+  const userReq = request.body
+  if (authenticate(userReq) {
+      // handler logic goes here
+   } else {
+      response.status(404)
+   }
+}*/
+
+
+
 module.exports = app;
+
+

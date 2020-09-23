@@ -1,26 +1,58 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from './Avatar';
+import { signin } from '../../API/service';
 
 /**
  * user is the object containing user info, like name, email etc
  */
-export default ({isLoggedUser = false, setIsVisible, user}) => {
+
+
+export default ({loggedUser, setIsVisible, setLoggedUser}) => {
+  const [loginData, setLoginData] = useState({});
+  const loginUser = async () => {
+    // send request to get /users
+    const {email, password} = loginData;
+    if (email && password) {
+      const user = await signin(loginData);
+      if (user) {
+        setLoggedUser(user);
+      } else {
+      // notification 404
+
+      }
+    } else {
+      // notification of required data
+    }
+  };
   return <div className="user">
     {
-    !isLoggedUser &&
+    !loggedUser &&
     <>
       <div className="inputs">
-        <div className="pwd">
-          <label htmlFor="password">Password</label>
-          <input type="text" name="password"/>
-        </div>
         <div className="email">
           <label htmlFor="email">Email</label>
-          <input type="text" name="email"/>
+          <input
+            type="text"
+            name="email"
+            required
+            onChange={ e =>
+              setLoginData({...loginData, email: e.target.value})
+            }/>
+        </div>
+        <div className="pwd">
+          <label htmlFor="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            required
+            onChange={ e => {
+              setLoginData({...loginData, password: e.target.value})
+            }
+            }/>
         </div>
       </div>
       <div className="buttons">
-        <button onClick={() => setIsVisible(true)}>Login</button>    
+        <button onClick={() => loginUser() }>Login</button>    
         <button onClick={() => setIsVisible(true)}>Register</button>    
       </div>
 
@@ -28,7 +60,7 @@ export default ({isLoggedUser = false, setIsVisible, user}) => {
     }
     <div className="avatar">
       <Avatar/>
-  {isLoggedUser && <p>Hi {user.name}</p>}
+  {loggedUser && <p>Hi {loggedUser?.name}</p>}
     </div>
   </div>
 }

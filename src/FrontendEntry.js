@@ -10,9 +10,10 @@ import AddResult from './components/AddResult';
 import {getResults} from './API/service';
 import Modal from './components/Modal';
 
+
 function App() {
   const [results, setResults] = useState([]);
-  const [isLoggedUser, setIsLoggedUser] = useState(false);
+  const [loggedUser, setLoggedUser] = useState();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -23,7 +24,6 @@ function App() {
       setResults(results);
     } 
   }
-
   fetchData();
 }, [])
   return (
@@ -32,14 +32,15 @@ function App() {
         <div className="header">
           <Twitch/>
           <User
-            isLoggedUser={isLoggedUser}
+            loggedUser={loggedUser}
             setIsVisible={setIsVisible}
+            setLoggedUser={setLoggedUser}
             isVisible={isVisible}
           />
           <Modal
             contentComponent={
               <RegisterForm
-              setIsLoggedUser={setIsLoggedUser}
+              setLoggedUser={setLoggedUser}
               setIsVisible={setIsVisible}
             />}
             setIsVisible={setIsVisible}

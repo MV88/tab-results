@@ -118,3 +118,6 @@ dist
 
 docker-data
 api/
+
+selfsigned.crt
+selfsigned.key

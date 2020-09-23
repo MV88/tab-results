@@ -21,7 +21,8 @@ exports.up = async (knex) => {
     table.increments().notNullable();
     email(table, 'email').notNullable().unique();
     table.string('name').notNullable();
-    table.string('password', 127).notNullable();
+    table.string('token ').notNullable();
+    table.string('password_digest').notNullable();
     table.datetime('last_login');
     addDefaultColumns(table);
   });
