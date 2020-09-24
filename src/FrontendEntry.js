@@ -1,14 +1,15 @@
 import React, {useEffect, useState} from 'react';
 
 import './App.css';
-import Table from './components/Table';
+import Results from './components/Results';
 import Twitch from './components/Twitch';
 import Statistics from './components/Statistics';
 import User from './components/user/User';
 import RegisterForm from './components/user/RegisterForm';
 import AddResult from './components/AddResult';
-import {getResults} from './API/service';
+import {getUserResults} from './API/service';
 import Modal from './components/Modal';
+import Intro from './components/Intro';
 
 
 function App() {
@@ -17,15 +18,17 @@ function App() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    async function fetchData() {
-    const resPromise = await getResults();
-    const {results} = await resPromise.json();
-    if (results){
-      setResults(results);
-    } 
+    if (loggedUser) {
+      async function fetchData() {
+      const resPromise = await getUserResults(loggedUser);
+      const {results} = await resPromise.json();
+      if (results){
+        setResults(results);
+      }
+    }
+    fetchData();
   }
-  fetchData();
-}, [])
+}, [loggedUser])
   return (
     <div className="tab">
       <div className="container">
@@ -49,12 +52,17 @@ function App() {
         </div>
         <div className="body">
           <img className="tab-banner" alt="tab-banner" src="http://www.numantiangames.com/wp-content/uploads/LogoTheyAreBillions540.gif" />
-          <h1> TAB Results</h1>
-          <Table rows={results}/>
-          <Statistics/>
-          <AddResult
-            setResults={setResults}
-            />
+          {
+            loggedUser ? <>
+            <h1> TAB Results</h1>
+              <Results rows={results}/>
+              <Statistics/>
+              <AddResult setResults={setResults} />
+            </>
+            : <Intro/>
+              
+          }
+          
         </div>
       </div>
     </div>

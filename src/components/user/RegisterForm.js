@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import omit from 'lodash/omit';
 import { signup } from '../../API/service';
 
 
@@ -7,8 +6,8 @@ export default ({setLoggedUser, setIsVisible}) => {
   const validateData = async (user) => {
     // TODO validate data before send
     if (user.name && user.password && user.email) {
-      await signup(user);
-      setLoggedUser(omit(user, "password"));
+      const loggedUser = await signup(user);
+      setLoggedUser(loggedUser);
       setIsVisible(false);
     }
   }

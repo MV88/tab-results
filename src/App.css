@@ -19,12 +19,21 @@ input, input:focus, input:hover, button {
   outline: none;
 }
 button {
-  background-color:rgb(145, 71, 255);
+  background-color:#9147ff;
   color: white;
   height: 30px;
   width: 80px;
   border: none;
   border-radius: 15px;
+}
+button:active, button:hover {
+  background-color:#7c26ff;
+}
+button:active {
+  transform: scale(0.94); 
+  /* Scaling button to 0.98 to its original size */ 
+  /* box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24); */
+  /* Lowering the shadow */ 
 }
 .twitch-link {
   display: flex;
@@ -64,12 +73,16 @@ td, th {
   padding: 8px;
 }
 
-tr:nth-child(even) {
+.table-container tr:nth-child(even) {
   background-color: #dddddd;
 }
 
-.table-container {
+.intro table td, th {
+  border: none;
+}
+.table-container, .intro {
   display: flex;
+  flex-direction: column;
   margin: auto;
   width: 80%
 }
@@ -135,3 +148,4 @@ tr:nth-child(even) {
   display: flex;
   align-items: center;
 }
+

@@ -1,7 +1,6 @@
 const tableNames = require('../constants/tableNames');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { table } = require('console');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../knexfile')[environment];
 const knex = require('knex')(configuration);
@@ -16,9 +15,10 @@ const hashPassword = (password) => {
 };
 
 // user will be saved to db - we're explicitly asking postgres to return back helpful info from the row created
-const createUser = async (user) => {
-  const userAdded = await knex.table(tableNames.user).insert(user);
-  return userAdded;
+const createUser = (user) => {
+  return knex.table(tableNames.user).insert(user).returning("*").then((data) => {
+    return data[0];
+  });
 };
 
 // crypto ships with node - we're leveraging it to create a random, secure token
@@ -44,13 +44,14 @@ const signup = (request, response) => {
     .then(() => createUser(user))
     .then(user => {
       delete user.password_digest;
-      response.status(201).json({ user });
+      response.status(201).json(user);
     })
     .catch((err) => console.error(err));
 };
 
 const findUser = (userReq) => {
   return knex.select("*").from(tableNames.user).where("email", userReq.email).then((data) => {
+    console.log("user", data[0]);
     return data[0];
   },
   );
@@ -73,7 +74,7 @@ const checkPassword = (reqPassword, foundUser) => {
 
 const updateUserToken = (token, user) => {
 
-  return knex(tableNames.user).where("id", user.id).update({"token": token}, ["token", "id"]).then((data) => data[0]);
+  return knex(tableNames.user).where("email", user.email).update({"token": token}, ["token", "id"]).then((data) => data[0]);
 };
 
 const signin = (request, response) => {
@@ -87,26 +88,33 @@ const signin = (request, response) => {
     })
     .then((res) => createToken())
     .then(token => updateUserToken(token, user))
-    .then(() => {
+    .then(({token}) => {
       delete user.password_digest;
-      response.status(200).json(user);
+      response.status(200).json({
+        ...user,
+        token,
+      });
     })
     .catch((err) => console.error(err));
 };
+
+const findByToken = (token) => {
+  return knex.select("*").from(tableNames.user).where("token", token).then((data) => data[0]);
+};
+
 // app/models/user.js
 const authenticate = (userReq) => {
   findByToken(userReq.token)
     .then((user) => {
-      if (user.username === userReq.username) {
+      console.log("userReq.token", userReq.token);
+      console.log("user", user);
+      console.log("userReq", userReq);
+      if (user && user.email === userReq.email) {
         return true;
       } else {
         return false;
       }
     });
-};
-
-const findByToken = (token) => {
-  return knex.select("*").from(tableNames.user).where("token", token).then((data) => data[0]);
 };
 
 // don't forget to export!

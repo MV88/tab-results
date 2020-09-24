@@ -1,20 +1,20 @@
-const axios = require('axios');
-const bcrypt = require('bcryptjs');
-// const salt = bcrypt.genSaltSync(10);
-const port = process.env.PORT || 5050;
+import axios from 'axios';
+import pick from 'lodash/pick';
 
 
 /**
- * 
+ * sends a request to the backend to fetch all the user results
+ * @param user user information: token, id
+ * @return all user results
  */
-export const getResults = () => fetch(`https://localhost:/results`);
+export const getUserResults = (user) => axios.post(`https://localhost/userResults`, pick(user, ["email", "token"]));
 
 
 /**
  * 
  * @param {*} results 
  */
-export const postResults = (results) => axios.post(`https://localhost:/results`, results)
+export const postResults = (results) => axios.post(`https://localhost/results`, results)
   .then(response => response.data)
   .catch(function (error) {
     console.log(error);

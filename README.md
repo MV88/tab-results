@@ -25,9 +25,10 @@ ctrl + click to open it in a new browser
     - [x] if logged --> username
     - [x] add registration form
 - [ ] add logout button
-- [ ] block non authenticated part of the website
-- [ ] remember to add user token to requests
-  - [ ] spinner and loading messages, feedbacks
+- [x] block non authenticated part of the website
+- [ ] add user token to requests  <--- wip
+  - [ ] add a new result request <--- wip
+- [ ] spinner and loading messages, feedbacks
 - [ ] chart of results
 - [ ] filtering
 - [ ] pagination
