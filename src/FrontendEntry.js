@@ -20,8 +20,9 @@ function App() {
   useEffect(() => {
     if (loggedUser) {
       async function fetchData() {
-      const resPromise = await getUserResults(loggedUser);
-      const {results} = await resPromise.json();
+      const {data: {
+        results
+      }} = await getUserResults(loggedUser);
       if (results){
         setResults(results);
       }
@@ -57,7 +58,10 @@ function App() {
             <h1> TAB Results</h1>
               <Results rows={results}/>
               <Statistics/>
-              <AddResult setResults={setResults} />
+              <AddResult
+                setResults={setResults}
+                loggedUser={loggedUser}
+               />
             </>
             : <Intro/>
               

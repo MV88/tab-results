@@ -1,48 +1,16 @@
 const express = require('express');
-// const axios = require('axios');
-const morgan = require('morgan');
-const compression = require('compression');
-const helmet = require('helmet');
-const cors = require('cors');
-const https = require('https');
-const fs = require('fs');
 require('dotenv').config();
-
-const { signup, authenticate, signin } = require('./src/models/user');
-
-
-
-const key = fs.readFileSync(__dirname + '/selfsigned.key');
-const cert = fs.readFileSync(__dirname + '/selfsigned.crt');
-const options = {
-  key: key,
-  cert: cert,
-};
-
-// todo add body parser
-const app = express();
-
-const server = https.createServer(options, app);
-server.listen(process.env.HTTPS_PORT, () => {
-  console.log("server starting on port : " + process.env.HTTPS_PORT);
-});
-
-const bodyParser = require('body-parser');
-const tableNames = require('./src/constants/tableNames');
-
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const knex = require('knex')(configuration);
 
-const jsonParser = bodyParser.json();
+const app = require('./middlewares')(express());
 
 
-app.use(cors());
-app.use(morgan('tiny'));
-app.use(compression());
-app.use(helmet());
-app.use(jsonParser);
+const { signup, authenticate, signin } = require('./src/models/user');
+const tableNames = require('./src/constants/tableNames');
 
+// routes
 
 app.get("/", (req, res) => {
   res.json({
@@ -51,37 +19,44 @@ app.get("/", (req, res) => {
 });
 
 /**
+ * this will fetch all the results from the user
  * @param {Knex} knex
  */
 app.post("/userResults", async (req, res) => {
   const userReq = req.body;
   
   if (authenticate(userReq)) {
-    const results = await knex.select("*").from(tableNames.result).where("email", userReq.email);
+    console.log("user is authenticated");
+    const results = await knex
+      .select("*")
+      .from(tableNames.result)
+      .where("user_id", userReq.id);
     res.json({
       message: "These are the user results",
       results,
     });
   } else {
+    console.log("user is not authenticated");
     res.status(404);
   }
 });
 
 app.post("/results", async (req, res) => {
-  const body = req.body;
-  const users = await knex.select("*").from(tableNames.user).where("id", body.id);
+  const {user, result} = req.body;
+  //  TODO add maptype from request
   
-  // const mapTypes = await knex.select("*").from(tableNames.map_type).where("map_type", req.map_type);
   const mapTypes = await knex.select("*").from(tableNames.map_type);
-  if (authenticate(body)) {
-    // handler logic goes here
+  if (authenticate(user)) {
     await knex.table(tableNames.result).insert({
-      user_id: users[0].id,
+      user_id: user.id,
       map_type_id: mapTypes[0].id,
-      ...body.result,
+      ...result,
     });
   
-    const results = await knex.select("*").from(tableNames.result);
+    const results = await knex
+      .select("*")
+      .from(tableNames.result)
+      .where("user_id", user.id);
     res.json({
       message: "Results",
       results,
@@ -97,21 +72,9 @@ app.post("/results", async (req, res) => {
 
 
 app.post("/signup", signup);
-// todo add error handler
-
 app.post('/signin', signin);
 
-// with authentication
-/*
-const userPhotos = (request, response) => {
-  const userReq = request.body
-  if (authenticate(userReq) {
-      // handler logic goes here
-   } else {
-      response.status(404)
-   }
-}*/
-
+// todo add error handler
 
 
 module.exports = app;

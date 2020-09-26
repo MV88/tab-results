@@ -1,12 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import { postResults } from '../API/service';
 
-const validateData = async (values, setResults) => {
-  // TODO validate data before send
-  const {results} = await postResults(values);
-    console.log("results", results);
-    setResults(results);
-}
 const getDifficultyOptions = (values = {}, setValues) => {
   switch (values.map) {
     case "4":
@@ -66,13 +60,19 @@ const getDifficultyOptions = (values = {}, setValues) => {
   }
 }
 
-export default ({setResults}) => {
+export default ({setResults, loggedUser}) => {
   const [values, setValues] = useState({});
 
   useEffect(() => {
     console.log("values", values);
     
   }, [values])
+  
+  const validateData = async () => {
+    // TODO validate data before send
+    const {results} = await postResults(values, loggedUser);
+      setResults(results);
+  }
   return <div className="add-result">
       <h3>Add new result</h3>
       <form className="form" id="form-add-result">

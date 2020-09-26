@@ -7,14 +7,22 @@ import pick from 'lodash/pick';
  * @param user user information: token, id
  * @return all user results
  */
-export const getUserResults = (user) => axios.post(`https://localhost/userResults`, pick(user, ["email", "token"]));
+export const getUserResults = (user) => axios.post(`https://localhost/userResults`, pick(user, ["id", "token"]));
 
 
 /**
  * 
- * @param {*} results 
+ * @param {object} result 
+ * @param {object} user
  */
-export const postResults = (results) => axios.post(`https://localhost/results`, results)
+export const postResults = (result, {token, email, id}) => axios.post(`https://localhost/results`, {
+  result,
+  user: {
+    id,
+    email,
+    token,
+  }
+})
   .then(response => response.data)
   .catch(function (error) {
     console.log(error);

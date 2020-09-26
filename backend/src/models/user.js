@@ -51,7 +51,6 @@ const signup = (request, response) => {
 
 const findUser = (userReq) => {
   return knex.select("*").from(tableNames.user).where("email", userReq.email).then((data) => {
-    console.log("user", data[0]);
     return data[0];
   },
   );
@@ -99,22 +98,24 @@ const signin = (request, response) => {
 };
 
 const findByToken = (token) => {
-  return knex.select("*").from(tableNames.user).where("token", token).then((data) => data[0]);
+  return knex
+    .select("*")
+    .from(tableNames.user)
+    .where("token", token)
+    .then((data) => data[0]);
 };
 
 // app/models/user.js
-const authenticate = (userReq) => {
-  findByToken(userReq.token)
+const authenticate = async (userReq) => {
+  const isAuthenticated = await findByToken(userReq.token)
     .then((user) => {
-      console.log("userReq.token", userReq.token);
-      console.log("user", user);
-      console.log("userReq", userReq);
-      if (user && user.email === userReq.email) {
+      if (user && user.id === userReq.id) {
         return true;
       } else {
         return false;
       }
     });
+    return isAuthenticated;
 };
 
 // don't forget to export!
