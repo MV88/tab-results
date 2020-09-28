@@ -1,6 +1,7 @@
 const tableNames = require('../constants/tableNames');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const { user } = require('../constants/tableNames');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../knexfile')[environment];
 const knex = require('knex')(configuration);
@@ -31,23 +32,6 @@ const createToken = () => {
 };
 
 
-// app/models/user.js
-const signup = (request, response) => {
-  const user = request.body;
-  hashPassword(user.password)
-    .then((hashedPassword) => {
-      delete user.password;
-      user.password_digest = hashedPassword;
-    })
-    .then(() => createToken())
-    .then(token => user.token = token)
-    .then(() => createUser(user))
-    .then(user => {
-      delete user.password_digest;
-      response.status(201).json(user);
-    })
-    .catch((err) => console.error(err));
-};
 
 const findUser = (userReq) => {
   return knex.select("*").from(tableNames.user).where("email", userReq.email).then((data) => {
@@ -73,8 +57,53 @@ const checkPassword = (reqPassword, foundUser) => {
 
 const updateUserToken = (token, user) => {
 
-  return knex(tableNames.user).where("email", user.email).update({"token": token}, ["token", "id"]).then((data) => data[0]);
+  return knex(tableNames.user)
+    .where("email", user.email)
+    .update({"token": token}, ["token", "id"])
+    .then((data) => data[0]);
 };
+
+const findByToken = (token) => {
+  return knex
+    .select("*")
+    .from(tableNames.user)
+    .where("token", token)
+    .then((data) => data[0]);
+};
+const deleteToken = (token) => {
+  return knex(tableNames.user)
+    .where("token", token)
+    .update({"token": ""});
+};
+
+const authenticate = (userReq) => {
+  const isAuthenticated = findByToken(userReq.token)
+    .then((user) => {
+      if (user && (user.id === userReq.id)) {
+        return true;
+      }
+      return false;
+    });
+    return isAuthenticated;
+};
+
+const signup = (request, response) => {
+  const user = request.body;
+  hashPassword(user.password)
+    .then((hashedPassword) => {
+      delete user.password;
+      user.password_digest = hashedPassword;
+    })
+    .then(() => createToken())
+    .then(token => user.token = token)
+    .then(() => createUser(user))
+    .then(user => {
+      delete user.password_digest;
+      response.status(201).json(user);
+    })
+    .catch((err) => console.error(err));
+};
+
 
 const signin = (request, response) => {
   const userReq = request.body;
@@ -97,30 +126,32 @@ const signin = (request, response) => {
     .catch((err) => console.error(err));
 };
 
-const findByToken = (token) => {
-  return knex
-    .select("*")
-    .from(tableNames.user)
-    .where("token", token)
-    .then((data) => data[0]);
-};
 
-// app/models/user.js
-const authenticate = async (userReq) => {
-  const isAuthenticated = await findByToken(userReq.token)
-    .then((user) => {
-      if (user && user.id === userReq.id) {
-        return true;
-      } else {
-        return false;
-      }
+const signout = (request, response) => {
+  const userReq = request.body;
+  console.log("userReq", userReq);
+
+  // TODO think about security issues here
+  // is it safe to pass the token in the body request of signout ?
+  return deleteToken(userReq.token)
+    .then(() => {
+      response.status(200).json({
+        message: "Token deleted",
+      });
+    })
+    .catch((err) => {
+      response.status(200).json({
+        message: "Cannot delete the Token",
+        token: user.token,
+      });
+      console.error(err);
     });
-    return isAuthenticated;
 };
 
-// don't forget to export!
+
 module.exports = {
   signup,
   signin,
+  signout,
   authenticate,
 };

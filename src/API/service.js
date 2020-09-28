@@ -56,3 +56,13 @@ export const signin = (user) => {
       return error.response.data; 
     });;
 }
+
+export const signout = (user) => {
+  console.log("signout", user);
+  return axios.post(`https://localhost/signout`, {...user})
+    .then(response => response.data)
+    .catch(function (error) {
+      console.log(error);
+      return error.response.data; 
+    });;
+}

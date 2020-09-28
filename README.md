@@ -15,7 +15,9 @@ ctrl + click to open it in a new browser
 - [x] add https support
 - [x] add authentication
   - [x] ADD HEADER
-  - [/] [express.jwt](https://www.npmjs.com/package/express-jwt), not used, but used a similar technique described [here](https://gist.github.com/laurenfazah/f9343ae8577999d301334fc68179b485)
+  - [ ] [express.jwt](https://www.npmjs.com/package/express-jwt) <--- WIP
+  - [ ] [TO READ](https://stackabuse.com/authentication-and-authorization-with-jwts-in-express-js/) 
+  - [ ] [EXAMPLE](https://github.com/juffalow/express-jwt-example) 
   - [x] on the right corner
     - [x] login form 
     - [x] login button 
@@ -24,10 +26,11 @@ ctrl + click to open it in a new browser
     - [ ] if logged --> avatar
     - [x] if logged --> username
     - [x] add registration form
-- [ ] add logout button
+- [x] add logout button
+- [ ] store user session with token  <--- wip
 - [x] block non authenticated part of the website
-- [ ] add user token to requests  <--- wip
-  - [ ] add a new result request <--- wip
+- [x] add user token to requests
+  - [x] add a new result request
 - [ ] spinner and loading messages, feedbacks
 - [ ] chart of results
 - [ ] filtering
@@ -39,6 +42,8 @@ ctrl + click to open it in a new browser
   - [ ] pr
 - [ ] sorting
 - [ ] integrate this with twitch chat
+  - [ ] if we use cookie and jwt, we can allow only the broadcaster to use the commands to add data, or update stuff
+  - [ ] but the commands to fetch data can be used from everyone
 - [ ] dark mode
 
 ### LOW PRIORITY 

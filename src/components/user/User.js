@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import Avatar from './Avatar';
-import { signin } from '../../API/service';
+import { signin, signout } from '../../API/service';
 
 /**
  * user is the object containing user info, like name, email etc
  */
+
+import { isLoggedIn } from '../../utils/UserUtils';
 
 
 export default ({loggedUser, setIsVisible, setLoggedUser}) => {
@@ -26,7 +28,7 @@ export default ({loggedUser, setIsVisible, setLoggedUser}) => {
   };
   return <div className="user">
     {
-    !loggedUser &&
+    !isLoggedIn(loggedUser) &&
     <>
       <div className="inputs">
         <div className="email">
@@ -59,8 +61,12 @@ export default ({loggedUser, setIsVisible, setLoggedUser}) => {
     </> 
     }
     <div className="avatar">
+    {isLoggedIn(loggedUser) && <p>Hi {loggedUser?.name}</p>}
+    {isLoggedIn(loggedUser) && <button onClick={ async() => {
+        await signout(loggedUser);
+        setLoggedUser({})
+    } }>Logout</button>}
       <Avatar/>
-  {loggedUser && <p>Hi {loggedUser?.name}</p>}
     </div>
   </div>
 }

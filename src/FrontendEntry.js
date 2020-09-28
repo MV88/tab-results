@@ -10,6 +10,7 @@ import AddResult from './components/AddResult';
 import {getUserResults} from './API/service';
 import Modal from './components/Modal';
 import Intro from './components/Intro';
+import { isLoggedIn } from './utils/UserUtils';
 
 
 function App() {
@@ -18,7 +19,7 @@ function App() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (loggedUser) {
+    if (isLoggedIn(loggedUser)) {
       async function fetchData() {
       const {data: {
         results
@@ -54,7 +55,7 @@ function App() {
         <div className="body">
           <img className="tab-banner" alt="tab-banner" src="http://www.numantiangames.com/wp-content/uploads/LogoTheyAreBillions540.gif" />
           {
-            loggedUser ? <>
+            isLoggedIn(loggedUser) ? <>
             <h1> TAB Results</h1>
               <Results rows={results}/>
               <Statistics/>

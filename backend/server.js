@@ -7,7 +7,7 @@ const knex = require('knex')(configuration);
 const app = require('./middlewares')(express());
 
 
-const { signup, authenticate, signin } = require('./src/models/user');
+const { signup, signout, authenticate, signin } = require('./src/controllers/user');
 const tableNames = require('./src/constants/tableNames');
 
 // routes
@@ -24,8 +24,7 @@ app.get("/", (req, res) => {
  */
 app.post("/userResults", async (req, res) => {
   const userReq = req.body;
-  
-  if (authenticate(userReq)) {
+  if (await authenticate(userReq)) {
     console.log("user is authenticated");
     const results = await knex
       .select("*")
@@ -46,7 +45,7 @@ app.post("/results", async (req, res) => {
   //  TODO add maptype from request
   
   const mapTypes = await knex.select("*").from(tableNames.map_type);
-  if (authenticate(user)) {
+  if (await authenticate(user)) {
     await knex.table(tableNames.result).insert({
       user_id: user.id,
       map_type_id: mapTypes[0].id,
@@ -73,6 +72,7 @@ app.post("/results", async (req, res) => {
 
 app.post("/signup", signup);
 app.post('/signin', signin);
+app.post('/signout', signout);
 
 // todo add error handler
 
