@@ -47,7 +47,8 @@ app.post("/results/", authenticateJWT, async (req, res) => {
   //  TODO add maptype from request
   
   const mapTypes = await knex.select("*").from(tableNames.map_type);
-  const user = findUser(req.user.email);
+  console.log("user is authenticated and it is ", req.user);
+  const user = await findUser(req.user.email);
   await knex.table(tableNames.result).insert({
     ...result,
     user_id: user.id,

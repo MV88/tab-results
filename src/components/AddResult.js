@@ -70,8 +70,8 @@ export default ({setResults, loggedUser}) => {
   
   const validateData = async () => {
     // TODO validate data before send
-    const {results} = await postResults(values, loggedUser);
-      setResults(results);
+    const response = await postResults(values, loggedUser);
+    response?.results && setResults(response.results);
   }
   return <div className="add-result">
       <h3>Add new result</h3>

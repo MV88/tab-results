@@ -5,7 +5,7 @@ import axios from 'axios';
  * @param user user information: token, id
  * @return all user results
  */
-export const getUserResults = ({accessToken}) => axios.post(`https://localhost/results/byUser`, undefined, {
+export const getUserResults = ({accessToken}) => axios.post(`${process.env.SERVER_URL}/results/byUser`, undefined, {
   headers: {
     "Authorization": `bearer ${accessToken}`,
 }});
@@ -16,7 +16,7 @@ export const getUserResults = ({accessToken}) => axios.post(`https://localhost/r
  * @param {object} result 
  * @param {object} user
  */
-export const postResults = (result, {accessToken}) => axios.post(`https://localhost/results/`, result, {
+export const postResults = (result, {accessToken}) => axios.post(`${process.env.SERVER_URL}/results/`, result, {
   headers: {
     "Authorization": `bearer ${accessToken}`,
 }})
@@ -32,7 +32,7 @@ export const postResults = (result, {accessToken}) => axios.post(`https://localh
  */
 export const signup = (user) => {
   // const password = bcrypt.hashSync(user.password, salt);
-  return axios.post(`https://localhost/signup`, user)
+  return axios.post(`${process.env.SERVER_URL}/signup`, user)
     .then(response => response.data)
     .catch(function (error) {
       console.log(error);
@@ -47,7 +47,7 @@ export const signup = (user) => {
 
 export const signin = (user) => {
 
-  return axios.post(`https://localhost/signin`, user)
+  return axios.post(`${process.env.SERVER_URL}/signin`, user)
     .then(response => {
       return response.data;
     })
@@ -57,7 +57,7 @@ export const signin = (user) => {
 }
 
 export const signout = ({accessToken}) => {
-  return axios.post(`https://localhost/signout`, undefined, {
+  return axios.post(`${process.env.SERVER_URL}/signout`, undefined, {
     headers: {
       "Authorization": `bearer ${accessToken}`,
   }})

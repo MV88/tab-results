@@ -5,7 +5,7 @@ const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../knexfile')[environment];
 const knex = require('knex')(configuration);
 
-const EXPIRES_IN = "5s";
+const EXPIRES_IN = "50m";
 let refreshTokens = [];
 
 // check out bcrypt's docs for more info on their hashing function
@@ -34,7 +34,7 @@ const findUser = (email) => {
 
 const checkPassword = (reqPassword, foundUser) => {
   return new Promise((resolve, reject) =>
-    bcrypt.compare(reqPassword, foundUser.password_digest, (err, res) => {
+    bcrypt.compare(reqPassword, foundUser && foundUser.password_digest, (err, res) => {
         if (err) {
           reject(err);
         }
@@ -69,11 +69,13 @@ const authenticateJWT = (req, res, next) => {
 
 /**
  * 
- * @param {*} email 
+ * @param {*} user with email and name
  * @param {*} expiresIn 
  * @param {*} secret 
  */
-const createToken = (email, expiresIn, secret = process.env.ACCESS_SECRET_TOKEN) => jwt.sign({email}, secret, expiresIn ? {expiresIn} : {});
+const createToken = (user, expiresIn, secret = process.env.ACCESS_SECRET_TOKEN) => jwt.sign({
+  email: user.email,
+}, secret, expiresIn ? {expiresIn} : {});
 
 const signup = (req, res) => {
   const user = req.body;
@@ -85,8 +87,8 @@ const signup = (req, res) => {
     .then(() => createUser(user))
     .then(user => {
       delete user.password_digest;
-      const accessToken = createToken(user.email, EXPIRES_IN );
-      const refreshToken = createToken(user.email, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
+      const accessToken = createToken(user, EXPIRES_IN );
+      const refreshToken = createToken(user, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
       refreshTokens.push(refreshToken);
 
       res.status(201).json({
@@ -109,12 +111,13 @@ const signin = (req, res) => {
     })
     .then(() => {
       delete user.password_digest;
-      const accessToken = createToken(user.email, EXPIRES_IN );
-      const refreshToken = createToken(user.email, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
+      const accessToken = createToken(user, EXPIRES_IN );
+      const refreshToken = createToken(user, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
       refreshTokens.push(refreshToken);
       console.log("accessToken", accessToken);
 
       res.status(200).json({
+        name: user.name,
         accessToken,
         refreshToken,
       });
@@ -146,7 +149,7 @@ const refreshToken = (req, res) => {
               message: "your token has been expired",
             });
         }
-        const accessToken = createToken(user.email, EXPIRES_IN );
+        const accessToken = createToken(user, EXPIRES_IN );
   
         res.json({
             accessToken,

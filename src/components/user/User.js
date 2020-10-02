@@ -19,7 +19,8 @@ export default ({loggedUser, setIsVisible, setLoggedUser}) => {
       if (user?.accessToken) {
         setLoggedUser({
           ...loggedUser,
-          accessToken: user?.accessToken
+          accessToken: user?.accessToken,
+          name: user?.name
         });
       } else {
       // notification 404
