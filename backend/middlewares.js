@@ -8,8 +8,8 @@ const jsonParser = bodyParser.json();
 
 const fs = require('fs');
 
-const key = fs.readFileSync(__dirname + '/selfsigned.key');
-const cert = fs.readFileSync(__dirname + '/selfsigned.crt');
+const key = fs.readFileSync(__dirname + '/localhost.key');
+const cert = fs.readFileSync(__dirname + '/localhost.crt');
 const options = {
   key: key,
   cert: cert,

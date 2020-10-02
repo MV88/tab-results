@@ -1,10 +1,12 @@
 const tableNames = require('../constants/tableNames');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
-const { user } = require('../constants/tableNames');
+const jwt = require('jsonwebtoken');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('../../knexfile')[environment];
 const knex = require('knex')(configuration);
+
+const EXPIRES_IN = "5s";
+let refreshTokens = [];
 
 // check out bcrypt's docs for more info on their hashing function
 const hashPassword = (password) => {
@@ -22,19 +24,9 @@ const createUser = (user) => {
   });
 };
 
-// crypto ships with node - we're leveraging it to create a random, secure token
-const createToken = () => {
-  return new Promise((resolve, reject) => {
-    crypto.randomBytes(16, (err, data) => {
-      err ? reject(err) : resolve(data.toString('base64'));
-    });
-  });
-};
 
-
-
-const findUser = (userReq) => {
-  return knex.select("*").from(tableNames.user).where("email", userReq.email).then((data) => {
+const findUser = (email) => {
+  return knex.select("*").from(tableNames.user).where("email", email).then((data) => {
     return data[0];
   },
   );
@@ -42,12 +34,12 @@ const findUser = (userReq) => {
 
 const checkPassword = (reqPassword, foundUser) => {
   return new Promise((resolve, reject) =>
-    bcrypt.compare(reqPassword, foundUser.password_digest, (err, response) => {
+    bcrypt.compare(reqPassword, foundUser.password_digest, (err, res) => {
         if (err) {
           reject(err);
         }
-        else if (response) {
-          resolve(response);
+        else if (res) {
+          resolve(res);
         } else {
           reject(new Error('Passwords do not match.'));
         }
@@ -55,97 +47,130 @@ const checkPassword = (reqPassword, foundUser) => {
   );
 };
 
-const updateUserToken = (token, user) => {
 
-  return knex(tableNames.user)
-    .where("email", user.email)
-    .update({"token": token}, ["token", "id"])
-    .then((data) => data[0]);
+const authenticateJWT = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader) {
+      const token = authHeader.split(' ')[1];
+
+      jwt.verify(token, process.env.ACCESS_SECRET_TOKEN, (err, user) => {
+          if (err) {
+              return res.sendStatus(403);
+          }
+
+          req.user = user;
+          next();
+      });
+  } else {
+      res.sendStatus(401);
+  }
 };
 
-const findByToken = (token) => {
-  return knex
-    .select("*")
-    .from(tableNames.user)
-    .where("token", token)
-    .then((data) => data[0]);
-};
-const deleteToken = (token) => {
-  return knex(tableNames.user)
-    .where("token", token)
-    .update({"token": ""});
-};
+/**
+ * 
+ * @param {*} email 
+ * @param {*} expiresIn 
+ * @param {*} secret 
+ */
+const createToken = (email, expiresIn, secret = process.env.ACCESS_SECRET_TOKEN) => jwt.sign({email}, secret, expiresIn ? {expiresIn} : {});
 
-const authenticate = (userReq) => {
-  const isAuthenticated = findByToken(userReq.token)
-    .then((user) => {
-      if (user && (user.id === userReq.id)) {
-        return true;
-      }
-      return false;
-    });
-    return isAuthenticated;
-};
-
-const signup = (request, response) => {
-  const user = request.body;
+const signup = (req, res) => {
+  const user = req.body;
   hashPassword(user.password)
     .then((hashedPassword) => {
       delete user.password;
       user.password_digest = hashedPassword;
     })
-    .then(() => createToken())
-    .then(token => user.token = token)
     .then(() => createUser(user))
     .then(user => {
       delete user.password_digest;
-      response.status(201).json(user);
+      const accessToken = createToken(user.email, EXPIRES_IN );
+      const refreshToken = createToken(user.email, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
+      refreshTokens.push(refreshToken);
+
+      res.status(201).json({
+        accessToken,
+        refreshToken,
+      });
     })
     .catch((err) => console.error(err));
 };
 
-
-const signin = (request, response) => {
-  const userReq = request.body;
+const signin = (req, res) => {
+  const userReq = req.body;
   let user;
+  console.log("signin", userReq);
 
-  findUser(userReq)
+  findUser(userReq.email)
     .then(foundUser => {
       user = foundUser;
       return checkPassword(userReq.password, foundUser);
     })
-    .then((res) => createToken())
-    .then(token => updateUserToken(token, user))
-    .then(({token}) => {
-      delete user.password_digest;
-      response.status(200).json({
-        ...user,
-        token,
-      });
-    })
-    .catch((err) => console.error(err));
-};
-
-
-const signout = (request, response) => {
-  const userReq = request.body;
-  console.log("userReq", userReq);
-
-  // TODO think about security issues here
-  // is it safe to pass the token in the body request of signout ?
-  return deleteToken(userReq.token)
     .then(() => {
-      response.status(200).json({
-        message: "Token deleted",
+      delete user.password_digest;
+      const accessToken = createToken(user.email, EXPIRES_IN );
+      const refreshToken = createToken(user.email, undefined, process.env.ACCESS_SECRET_REFRESH_TOKEN );
+      refreshTokens.push(refreshToken);
+      console.log("accessToken", accessToken);
+
+      res.status(200).json({
+        accessToken,
+        refreshToken,
       });
     })
     .catch((err) => {
-      response.status(200).json({
-        message: "Cannot delete the Token",
-        token: user.token,
-      });
       console.error(err);
+      res.json({
+        message: "Username or password incorrect",
+      });
     });
+};
+
+const refreshToken = (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+  
+    if (!token) {
+        return res.sendStatus(401);
+    }
+  
+    if (!refreshTokens.includes(token)) {
+        return res.sendStatus(403);
+    }
+  
+    jwt.verify(token, process.env.ACCESS_SECRET_REFRESH_TOKEN, (err, user) => {
+        if (err) {
+            return res.status(403).json({
+              message: "your token has been expired",
+            });
+        }
+        const accessToken = createToken(user.email, EXPIRES_IN );
+  
+        res.json({
+            accessToken,
+        });
+    });
+  } else {
+    console.log("no token provided");
+    res.sendStatus(401);
+  }
+};
+
+const signout = (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+  
+    if (!token) {
+        return res.sendStatus(401);
+    }
+    refreshTokens = refreshTokens.filter(t => t !== token);
+    res.status(200).json({
+      message: "Logout successful",
+    });
+  }
 };
 
 
@@ -153,5 +178,7 @@ module.exports = {
   signup,
   signin,
   signout,
-  authenticate,
+  refreshToken,
+  findUser,
+  authenticateJWT,
 };

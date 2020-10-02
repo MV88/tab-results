@@ -16,8 +16,11 @@ export default ({loggedUser, setIsVisible, setLoggedUser}) => {
     const {email, password} = loginData;
     if (email && password) {
       const user = await signin(loginData);
-      if (user) {
-        setLoggedUser(user);
+      if (user?.accessToken) {
+        setLoggedUser({
+          ...loggedUser,
+          accessToken: user?.accessToken
+        });
       } else {
       // notification 404
 

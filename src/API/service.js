@@ -1,13 +1,14 @@
 import axios from 'axios';
-import pick from 'lodash/pick';
-
 
 /**
  * sends a request to the backend to fetch all the user results
  * @param user user information: token, id
  * @return all user results
  */
-export const getUserResults = (user) => axios.post(`https://localhost/userResults`, pick(user, ["id", "token"]));
+export const getUserResults = ({accessToken}) => axios.post(`https://localhost/results/byUser`, undefined, {
+  headers: {
+    "Authorization": `bearer ${accessToken}`,
+}});
 
 
 /**
@@ -15,18 +16,15 @@ export const getUserResults = (user) => axios.post(`https://localhost/userResult
  * @param {object} result 
  * @param {object} user
  */
-export const postResults = (result, {token, email, id}) => axios.post(`https://localhost/results`, {
-  result,
-  user: {
-    id,
-    email,
-    token,
-  }
-})
+export const postResults = (result, {accessToken}) => axios.post(`https://localhost/results/`, result, {
+  headers: {
+    "Authorization": `bearer ${accessToken}`,
+}})
   .then(response => response.data)
   .catch(function (error) {
+    
     console.log(error);
-  });;
+  });
 
 /**
  * 
@@ -38,7 +36,7 @@ export const signup = (user) => {
     .then(response => response.data)
     .catch(function (error) {
       console.log(error);
-    });;
+    });
 }
 
 /**
@@ -50,19 +48,22 @@ export const signup = (user) => {
 export const signin = (user) => {
 
   return axios.post(`https://localhost/signin`, user)
-    .then(response => response.data)
+    .then(response => {
+      return response.data;
+    })
     .catch(function (error) {
       console.log(error);
-      return error.response.data; 
-    });;
+    });
 }
 
-export const signout = (user) => {
-  console.log("signout", user);
-  return axios.post(`https://localhost/signout`, {...user})
+export const signout = ({accessToken}) => {
+  return axios.post(`https://localhost/signout`, undefined, {
+    headers: {
+      "Authorization": `bearer ${accessToken}`,
+  }})
     .then(response => response.data)
     .catch(function (error) {
       console.log(error);
       return error.response.data; 
-    });;
+    });
 }

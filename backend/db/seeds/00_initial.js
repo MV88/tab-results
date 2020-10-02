@@ -16,9 +16,9 @@ exports.seed = async (knex) => {
 
   const password = crypto.randomBytes(15).toString('hex');
   const user = {
-    name: "MV88",
-    email: "teo.rubber@gmail.com",
-    token: "",
+    name: "gg",
+    email: "gg",
+    role: "admin",
     password_digest: await bcrypt.hash(password, 12),
   };
   

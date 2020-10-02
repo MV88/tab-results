@@ -15,9 +15,10 @@ ctrl + click to open it in a new browser
 - [x] add https support
 - [x] add authentication
   - [x] ADD HEADER
-  - [ ] [express.jwt](https://www.npmjs.com/package/express-jwt) <--- WIP
-  - [ ] [TO READ](https://stackabuse.com/authentication-and-authorization-with-jwts-in-express-js/) 
-  - [ ] [EXAMPLE](https://github.com/juffalow/express-jwt-example) 
+  - [x] [express.jwt](https://www.npmjs.com/package/express-jwt)
+    - [ ] store webtoken in a cookie
+  - [x] [TO READ](https://stackabuse.com/authentication-and-authorization-with-jwts-in-express-js/) 
+  - [x] [EXAMPLE](https://github.com/juffalow/express-jwt-example) 
   - [x] on the right corner
     - [x] login form 
     - [x] login button 
