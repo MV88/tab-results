@@ -10,7 +10,10 @@
     "bcryptjs": "^2.4.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.3"
+    "react-scripts": "3.4.3",
+    "react-switch": "^5.0.1",
+    "react-toggle-dark-mode": "^1.0.2",
+    "recharts": "^1.8.5"
   },
   "scripts": {
     "start": "react-scripts start",

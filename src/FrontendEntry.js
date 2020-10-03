@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import './App.css';
+import LineChart from './components/LineChart';
 import Results from './components/Results';
 import Twitch from './components/Twitch';
 import Statistics from './components/Statistics';
@@ -9,6 +10,7 @@ import RegisterForm from './components/user/RegisterForm';
 import AddResult from './components/AddResult';
 import {getUserResults} from './API/service';
 import Modal from './components/Modal';
+import DarkMode from './components/DarkMode';
 import Intro from './components/Intro';
 import { isLoggedIn } from './utils/UserUtils';
 
@@ -17,6 +19,7 @@ function App() {
   const [results, setResults] = useState([]);
   const [loggedUser, setLoggedUser] = useState();
   const [isVisible, setIsVisible] = useState(false);
+  const [isDarkMode, setDarkMode] = React.useState(false);
 
   useEffect(() => {
     if (isLoggedIn(loggedUser)) {
@@ -32,10 +35,10 @@ function App() {
   }
 }, [loggedUser])
   return (
-    <div className="tab">
+    <div className={`tab ${isDarkMode ? "dark": ""}`}>
       <div className="container">
         <div className="header">
-          <Twitch/>
+          <DarkMode isDarkMode={isDarkMode} setDarkMode={setDarkMode}/>
           <User
             loggedUser={loggedUser}
             setIsVisible={setIsVisible}
@@ -58,7 +61,9 @@ function App() {
             isLoggedIn(loggedUser) ? <>
             <h1> TAB Results</h1>
               <Results rows={results}/>
-              <Statistics/>
+              <Statistics results={results}/>
+              <LineChart results={results}/>
+
               <AddResult
                 setResults={setResults}
                 loggedUser={loggedUser}

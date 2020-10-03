@@ -1,3 +1,16 @@
+.dark-mode {
+  display: flex;
+}
+.dark-mode .text{
+ padding-left: 5px;
+}
+
+.dark{
+  background: black;
+  color: white
+ }
+ 
+
 .tab {
   text-align: center;
 }
@@ -10,6 +23,10 @@
   border-bottom: 1px solid cyan;
 }
 
+.recharts-wrapper{
+  display: flex;
+  margin: auto;
+}
 .tab-banner {
   padding-top: 10px;
   width: 15%;
@@ -38,6 +55,7 @@ button:active {
 .twitch-link {
   display: flex;
   padding-left: 10px;
+  padding-right: 10px;
 }
 .twitch-link h4 {
   margin-top: 5px;
@@ -87,8 +105,15 @@ td, th {
   width: 80%
 }
 
-.pr-score {
-  margin-top: 20px; 
+.statistics {
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  padding-left: 10px;
+  justify-content: center;
+}
+.statistics * {
+  padding-left: 10px;
 }
 
   .form {

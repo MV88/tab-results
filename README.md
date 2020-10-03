@@ -12,7 +12,7 @@ ctrl + click to open it in a new browser
 
 - [x] add new result
   - [x] update frontend after a new result has been added
-- [x] add https support
+- [ ] add https support, todo fix err invalid certificate error
 - [x] add authentication
   - [x] ADD HEADER
   - [x] [express.jwt](https://www.npmjs.com/package/express-jwt)
@@ -28,24 +28,25 @@ ctrl + click to open it in a new browser
     - [x] if logged --> username
     - [x] add registration form
 - [x] add logout button
-- [ ] store user session with token  <--- wip
+- [ ] store user session with token  <--- wip2
 - [x] block non authenticated part of the website
 - [x] add user token to requests
   - [x] add a new result request
 - [ ] spinner and loading messages, feedbacks
-- [ ] chart of results
+- [x] chart of results
 - [ ] filtering
 - [ ] pagination
 - [ ] searching
 - [ ] querying
-  - [ ] % win, % lose
+  - [x] % win, % lose
   - [ ] average day, score
-  - [ ] pr
+  - [x] pr
 - [ ] sorting
 - [ ] integrate this with twitch chat
   - [ ] if we use cookie and jwt, we can allow only the broadcaster to use the commands to add data, or update stuff
   - [ ] but the commands to fetch data can be used from everyone
-- [ ] dark mode
+- [x] dark mode
+- [ ] integrate SASS <-- wip
 
 ### LOW PRIORITY 
 - [ ] add runtime error handling

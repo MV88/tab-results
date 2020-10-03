@@ -1,11 +1,11 @@
 import axios from 'axios';
-
+const serverUrl = "http://localhost:5050";
 /**
  * sends a request to the backend to fetch all the user results
  * @param user user information: token, id
  * @return all user results
  */
-export const getUserResults = ({accessToken}) => axios.post(`${process.env.SERVER_URL}/results/byUser`, undefined, {
+export const getUserResults = ({accessToken}) => axios.post(`${serverUrl}/results/byUser`, undefined, {
   headers: {
     "Authorization": `bearer ${accessToken}`,
 }});
@@ -16,7 +16,7 @@ export const getUserResults = ({accessToken}) => axios.post(`${process.env.SERVE
  * @param {object} result 
  * @param {object} user
  */
-export const postResults = (result, {accessToken}) => axios.post(`${process.env.SERVER_URL}/results/`, result, {
+export const postResults = (result, {accessToken}) => axios.post(`${serverUrl}/results/`, result, {
   headers: {
     "Authorization": `bearer ${accessToken}`,
 }})
@@ -32,7 +32,7 @@ export const postResults = (result, {accessToken}) => axios.post(`${process.env.
  */
 export const signup = (user) => {
   // const password = bcrypt.hashSync(user.password, salt);
-  return axios.post(`${process.env.SERVER_URL}/signup`, user)
+  return axios.post(`${serverUrl}/signup`, user)
     .then(response => response.data)
     .catch(function (error) {
       console.log(error);
@@ -47,7 +47,7 @@ export const signup = (user) => {
 
 export const signin = (user) => {
 
-  return axios.post(`${process.env.SERVER_URL}/signin`, user)
+  return axios.post(`${serverUrl}/signin`, user)
     .then(response => {
       return response.data;
     })
@@ -57,7 +57,7 @@ export const signin = (user) => {
 }
 
 export const signout = ({accessToken}) => {
-  return axios.post(`${process.env.SERVER_URL}/signout`, undefined, {
+  return axios.post(`${serverUrl}/signout`, undefined, {
     headers: {
       "Authorization": `bearer ${accessToken}`,
   }})
